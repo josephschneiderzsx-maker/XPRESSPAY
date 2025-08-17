@@ -9,11 +9,17 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Import des routes
 const employeeRoutes = require("./routes/employees");
-app.use("/api/employees", employeeRoutes);
+const attendanceRoutes = require("./routes/attendance");
+const payrollRoutes = require("./routes/payroll");
 
-// Test route
+// Montage des routes
+app.use("/api/employees", employeeRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/payroll", payrollRoutes);
+
+// Test routes
 app.get("/", (req, res) => {
   res.send("✅ XpressPay Backend is running...");
 });
