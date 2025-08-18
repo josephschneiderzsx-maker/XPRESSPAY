@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const { getSettings, updateSettings } = require("../controllers/settingsController");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
-// Lire les paramètres
-router.get("/", getSettings);
+// GET /api/settings - Protected
+router.get("/", protect, authorize("admin", "payroll_manager"), getSettings);
 
-// Mettre à jour les paramètres
-router.put("/", updateSettings);
+// PUT /api/settings - Admin only
+router.put("/", protect, authorize("admin"), updateSettings);
 
 module.exports = router;

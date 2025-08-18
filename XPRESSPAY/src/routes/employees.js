@@ -5,6 +5,9 @@ const {
   getEmployees,
   getEmployeeById
 } = require("../controllers/employeesController");
+const { protect, authorize } = require("../middleware/authMiddleware");
+
+router.use(protect, authorize("admin", "payroll_manager"));
 
 // GET /api/employees?search=&department=&page=1&pageSize=20
 router.get("/", getEmployees);

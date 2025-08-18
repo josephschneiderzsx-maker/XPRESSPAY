@@ -507,6 +507,74 @@ DROP TABLE IF EXISTS `v_period_meal_costs`;
 
 /*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_period_meal_costs` AS select `dmc`.`userid` AS `userid`,min(`dmc`.`meal_date`) AS `period_start`,max(`dmc`.`meal_date`) AS `period_end`,sum(`dmc`.`count_breakfast`) AS `total_breakfast`,sum(`dmc`.`count_lunch_std`) AS `total_lunch_std`,sum(`dmc`.`count_lunch_premium`) AS `total_lunch_premium`,sum(`dmc`.`total_meals`) AS `total_meals`,sum(`dmc`.`cost_breakfast`) AS `total_cost_breakfast`,sum(`dmc`.`cost_lunch_std`) AS `total_cost_lunch_std`,sum(`dmc`.`cost_lunch_premium`) AS `total_cost_lunch_premium`,sum(`dmc`.`total_daily_cost`) AS `total_period_cost` from `xpresspay`.`v_daily_meal_costs` `dmc` group by `dmc`.`userid` */;
 
+
+/* Table structure for table `roles` */
+
+DROP TABLE IF EXISTS `roles`;
+
+CREATE TABLE `roles` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_role_name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/* Data for the table `roles` */
+
+insert  into `roles`(`id`,`name`,`description`) values
+(1,'admin','Full access to all system features'),
+(2,'payroll_manager','Access to payroll and employee management features');
+
+
+/* Table structure for table `users` */
+
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role_id` int(10) unsigned NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_username` (`username`),
+  UNIQUE KEY `uq_email` (`email`),
+  KEY `fk_user_role` (`role_id`),
+  CONSTRAINT `fk_user_role` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+/* Table structure for table `permissions` */
+
+DROP TABLE IF EXISTS `permissions`;
+
+CREATE TABLE `permissions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'e.g., users:create, payroll:run',
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_perm_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+/* Table structure for table `role_permissions` */
+
+DROP TABLE IF EXISTS `role_permissions`;
+
+CREATE TABLE `role_permissions` (
+  `role_id` int(10) unsigned NOT NULL,
+  `permission_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`role_id`,`permission_id`),
+  KEY `fk_rp_perm` (`permission_id`),
+  CONSTRAINT `fk_rp_perm` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rp_role` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
