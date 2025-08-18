@@ -14,23 +14,4 @@ const getCompanyInfo = async (req, res) => {
   }
 };
 
-// Mise à jour des infos entreprise
-const updateCompanyInfo = async (req, res) => {
-  try {
-    const { CompanyName, Email, Address1, City, Country, phone, timezone } = req.body;
-
-    await poolXpressPay.query(
-      `UPDATE company_info
-       SET company_name = ?, email = ?, address1 = ?, city = ?, country = ?, phone = ?, timezone = ?
-       WHERE id = 1`,
-      [CompanyName, Email, Address1, City, Country, phone, timezone]
-    );
-
-    res.json({ message: "Company info updated successfully ✅" });
-  } catch (err) {
-    console.error("❌ Error updating company info:", err.message);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-module.exports = { getCompanyInfo, updateCompanyInfo };
+module.exports = { getCompanyInfo };

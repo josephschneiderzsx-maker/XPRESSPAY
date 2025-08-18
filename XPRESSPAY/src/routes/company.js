@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { getCompanyInfo } = require("../controllers/companyController");
-const { protect, authorize } = require("../middleware/authMiddleware");
+const { getCompanyInfo, updateCompanyInfo } = require("../controllers/companyController");
 
-// GET : infos entreprise (Read-only)
-// Protected route, accessible by admin and payroll_manager
-router.get("/", protect, authorize("admin", "payroll_manager"), getCompanyInfo);
+// GET : infos entreprise
+router.get("/", getCompanyInfo);
+
+// PUT : mise à jour infos entreprise
+router.put("/", updateCompanyInfo);
 
 module.exports = router;

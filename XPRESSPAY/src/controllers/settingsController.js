@@ -1,4 +1,4 @@
-const { poolXpressPay, poolIngress } = require("../config/db");
+const { poolXpressPay } = require("../config/db");
 
 // GET - Lire les settings (1 seul enregistrement)
 async function getSettings(req, res) {
@@ -27,9 +27,22 @@ async function updateSettings(req, res) {
       meal_price_lunch_premium
     } = req.body;
 
+    // Basic validation
+    if (
+      default_ot_multiplier === undefined ||
+      currency === undefined ||
+      locale === undefined ||
+      rounding_rule === undefined ||
+      meal_price_breakfast === undefined ||
+      meal_price_lunch_std === undefined ||
+      meal_price_lunch_premium === undefined
+    ) {
+      return res.status(400).json({ error: "All setting fields are required." });
+    }
+
     await poolXpressPay.query(
-      `UPDATE payroll_settings 
-       SET default_ot_multiplier = ?, currency = ?, locale = ?, rounding_rule = ?, 
+      `UPDATE payroll_settings
+       SET default_ot_multiplier = ?, currency = ?, locale = ?, rounding_rule = ?,
            meal_price_breakfast = ?, meal_price_lunch_std = ?, meal_price_lunch_premium = ?, updated_at = NOW()
        WHERE id = 1`,
       [

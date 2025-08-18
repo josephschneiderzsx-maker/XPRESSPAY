@@ -17,17 +17,19 @@ const attendanceRoutes = require("./routes/attendance");
 const payrollRoutes = require("./routes/payroll");
 const settingsRoutes = require("./routes/settings");
 const companyRoutes = require("./routes/company");
-//const auditRoutes = require("./routes/audit");
-//const mealsRoutes = require("./routes/meals");
+const authRoutes = require("./routes/auth");
+const auditRoutes = require("./routes/audit");
+const mealsRoutes = require("./routes/meals");
 
 // Montage des routes
+app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/payroll", payrollRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/company", companyRoutes);
-//app.use("/api/audit", auditRoutes);
-//app.use("/api/meals", mealsRoutes);
+app.use("/api/audit", auditRoutes);
+app.use("/api/meals", mealsRoutes);
 
 // Test route
 app.get("/", (req, res) => {
